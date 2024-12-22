@@ -20,7 +20,7 @@ def calculate():
         b_param = request.args.get('b')
 
         if a_param is None or b_param is None:
-            return jsonify({"error": "Missing required parameters 'a' and 'b'."}), 400
+            return jsonify({"error": "Misssing required parameters 'a' and 'b'."}), 400
 
         try:
             a = float(a_param)
@@ -51,3 +51,4 @@ def calculate():
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, threaded=True)
+
