@@ -24,6 +24,8 @@
     <Compile Include="PythonKubernetes.py" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="deployment.yaml" />
+    <Content Include="Dockerfile" />
     <Content Include="requirements.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />

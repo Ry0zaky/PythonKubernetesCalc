@@ -1,16 +1,33 @@
 from flask import Flask, request, jsonify
+import logging
 
 app = Flask(__name__)
 
+logging.basicConfig(level=logging.INFO)
+
 @app.route('/')
 def home():
-    return "Welcome to the Simple Calculator API! Use /calculate endpoint with parameters 'a', 'b', and 'operation'."
+    return jsonify({
+        "message": "Welcome to the Simple Calculator API!",
+        "instructions": "Use the /calculate endpoint with query parameters 'a', 'b', and 'operation'.",
+        "example": "/calculate?a=5&b=3&operation=add"
+    })
 
 @app.route('/calculate', methods=['GET'])
 def calculate():
     try:
-        a = float(request.args.get('a'))
-        b = float(request.args.get('b'))
+        a_param = request.args.get('a')
+        b_param = request.args.get('b')
+
+        if a_param is None or b_param is None:
+            return jsonify({"error": "Missing required parameters 'a' and 'b'."}), 400
+
+        try:
+            a = float(a_param)
+            b = float(b_param)
+        except ValueError:
+            return jsonify({"error": "Invalid input. 'a' and 'b' must be numbers."}), 400
+
         operation = request.args.get('operation')
 
         if operation == 'add':
@@ -28,8 +45,9 @@ def calculate():
 
         return jsonify({"a": a, "b": b, "operation": operation, "result": result})
 
-    except (TypeError, ValueError):
-        return jsonify({"error": "Invalid input. Ensure 'a' and 'b' are numbers."}), 400
+    except Exception as e:
+        app.logger.error(f"Unexpected error: {e}")
+        return jsonify({"error": "An unexpected error occurred."}), 500
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=5000, threaded=True)
